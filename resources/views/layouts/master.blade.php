@@ -27,16 +27,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
          
         </ul>
        <!-- SEARCH FORM -->
-    <form class="form-inline ml-3">
       <div class="input-group input-group-sm">
-        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+        <input class="form-control form-control-navbar" @keyup="searchit" v-model="search" type="search" placeholder="Search" aria-label="Search">
         <div class="input-group-append">
-          <button class="btn btn-navbar" type="submit">
+          <button class="btn btn-navbar" @click="searchit">
             <i class="fa fa-search"></i>
           </button>
         </div>
       </div>
-    </form>
 
 
   </nav>
@@ -59,7 +57,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <img src="./img/profile.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">{{ Auth::user()->name }}</a>
+          <a href="#" class="d-block">{{ Auth::user()->name }}
+          <small class="d-block">{{ Auth::user()->type }}</small></a>
         </div>
       </div>
 
@@ -78,31 +77,26 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   </router-link>
                 </li>
 
-            
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon  fa fa-cog"></i>
-              <p>
-                Management
-                <i class="right fa fa-angle-left"></i>
-                <span class="right badge badge-danger">New</span>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <router-link to="/users" class="nav-link">
-                  <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Users</p>
-                </router-link>
-              </li>
-              <li class="nav-item">
-                <router-link  to="/users" class="nav-link">
-                  <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Inactive Page</p>
-                </router-link>
-              </li>
-            </ul>
-          </li>
+            @can('isAdmin')
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon  fa fa-cog"></i>
+                <p>
+                  Management
+                  <i class="right fa fa-angle-left"></i>
+                  <span class="right badge badge-danger">New</span>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <router-link to="/users" class="nav-link">
+                    <i class="fa fa-circle-o nav-icon"></i>
+                    <p>Users</p>
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+          @endcan
           <li class="nav-item">
               <router-link to="/profile" class="nav-link">
                 <i class="nav-icon fa fa-user"></i>
@@ -112,7 +106,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </p>
               </router-link>
             </li>
-
+            @can('isAdmin')              
+            <li class="nav-item">
+              <router-link to="/developer" class="nav-link">
+                <i class="nav-icon fa fa-cogs"></i>
+                <p>
+                  Developer
+                 
+                </p>
+              </router-link>
+            </li>
+            @endcan
             <li class="nav-item">
                
                 <a class="nav-link" href="{{ route('logout') }}"
@@ -142,6 +146,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <div class="content">
       <div class="container-fluid">
           <router-view></router-view>
+          <vue-progress-bar></vue-progress-bar>
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
@@ -159,6 +164,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
   </footer>
 </div>
 <!-- ./wrapper -->
+
+@auth
+<script>
+   window.user = @json (auth()->user())   
+</script>
+@endauth
+
+
+
 
 <!-- REQUIRED SCRIPTS -->
 
